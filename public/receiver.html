@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>test</title>
+  <script src="/socket.io/socket.io.js"></script>
+
+</head>
+<body>
+  <canvas id="canvas"></canvas>
+  <script type="text/javascript">
+    var socket = io();
+    var canvas = document.getElementById('canvas');
+    var ctx = canvas.getContext('2d');
+    socket.on('notice', (msg) => {
+      var imgae = new Image();
+      imgae.src = msg.filename;
+      ctx.drawImage(imgae, 0, 0);
+    });
+  </script>
+</body>
+</html>

@@ -1,14 +1,21 @@
 {
-    "name": "emotion-controller",
-    "version": "0.1.0",
-    "description": "To control your emotion",
-    "author": "SWLHX",
-    "main": "src/index.js",
-    "ruff": {
-        "boards": {
-            "ruff-mbd-v1": "^4.2.2",
-            "*": "*"
-        },
-        "dependencies": {}
-    }
+  "name": "doooor",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "bin": {
+    "doooor": "app.js"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "koa": "^2.2.0",
+    "koa-bodyparser": "^4.2.0",
+    "koa-router": "^7.2.0",
+    "koa-static": "^3.0.0",
+    "socket.io": "^2.0.2"
+  }
 }
