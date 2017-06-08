@@ -3,19 +3,50 @@
 <head>
   <title>test</title>
   <script src="/socket.io/socket.io.js"></script>
-
 </head>
 <body>
-  <canvas id="canvas"></canvas>
+  <canvas id=c></canvas>
   <script type="text/javascript">
     var socket = io();
-    var canvas = document.getElementById('canvas');
+    var canvas = document.getElementById('c');
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
     var ctx = canvas.getContext('2d');
+    var image = new Image();
+
+    var imageWidth = 0;
+    var imageHeight = 0;
+
+    var IMAGEWIDTH, IMAGEHEIGHT = 0;
+
     socket.on('notice', (msg) => {
-      var imgae = new Image();
-      imgae.src = msg.filename;
-      ctx.drawImage(imgae, 0, 0);
+      
+      var pos=window.document.location.href.indexOf(window.document.location.pathname); 
+      var localhostPaht=window.document.location.href.substring(0,pos); 
+      
+      image.src = localhostPaht + '/' + msg.filename;
+
+      image.onload = () => {
+        IMAGEWIDTH = image.width;
+        IMAGEHEIGHT = image.height;
+        window.requestAnimationFrame(Bigger);
+      };
     });
+
+    function Bigger() {
+      imageWidth += 10;
+      imageHeight += 10;
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      ctx.drawImage(image, window.innerWidth/2 - imageWidth/2, window.innerHeight/2 - imageHeight/2, imageWidth, imageHeight);
+
+      if (imageWidth < IMAGEWIDTH || imageHeight < IMAGEHEIGHT) {
+        window.requestAnimationFrame(Bigger);
+      }
+    }
+
   </script>
+ <!--  <script src='js/dat.gui.min.js'></script>
+  <script src="js/receiver.js"></script> -->
 </body>
 </html>

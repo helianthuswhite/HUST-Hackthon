@@ -2,10 +2,6 @@
 var w = c.width = window.innerWidth,
     h = c.height = window.innerHeight,
     ctx = c.getContext( '2d' ),
-
-    imgaeData,
-    imgaeIndex,
-    TIMEOUT = 10,
     
     opts = {
       
@@ -38,42 +34,7 @@ var w = c.width = window.innerWidth,
     tick = 0,
     first = true;
 
-var ajaxGet = () => {
-  return new Promise((resolve, reject) => {
-    var xmlhttp = new XMLHttpRequest();
-    xmlhttp.onreadystatechange=function()
-      {
-      if (xmlhttp.readyState==4 && xmlhttp.status==200)
-        {
-        resolve(xmlhttp.responseText);
-        }
-      }
-    xmlhttp.open("GET","/post/6",false);
-    xmlhttp.send();
-  });
-};
-
-var ajaxPost = (string) => {
-  return new Promise((resolve, reject) => {
-    var xmlhttp = new XMLHttpRequest();
-    xmlhttp.onreadystatechange=function()
-      {
-      if (xmlhttp.readyState==4 && xmlhttp.status==200)
-        {
-        resolve(xmlhttp.responseText);
-        }
-      }
-    xmlhttp.open("POST","/post",true);
-    xmlhttp.setRequestHeader("Content-type","application/json");
-    xmlhttp.send(JSON.stringify(string));
-  });
-};
-
 function init() {
-  
-  ajaxGet().then((imgae) => {
-    imgaeData = JSON.parse(imgae);
-  });
 
   lines.length = stars.length = 0;
   
@@ -110,15 +71,6 @@ function step() {
 }
 
 function draw() {
-  if (imgaeData) {
-    for (var i = 0;i < imgaeData.length; i++) {
-      ctx.beginPath();
-      ctx.fillStyle = '#fff';
-      ctx.arc(60*i, 30, 30, 0, Math.PI*2);
-      ctx.fill();
-      ctx.closePath();
-    }
-  }
   
   ctx.shadowBlur = 0;
   ctx.globalCompositeOperation = 'source-over';
@@ -220,35 +172,3 @@ Star.prototype.draw = function(){
 };
 
 init();
-
-Leap.loop({enableGestures: true}, function(frame) {
-
-  // ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
-
-  if (frame.pointables.length > 0) {
-    var position = frame.pointables[0].stabilizedTipPosition;
-    var normalized = frame.interactionBox.normalizePoint(position);
-
-    var x = ctx.canvas.width * normalized[0];
-    var y = ctx.canvas.height * (1 - normalized[1]);
-
-    ctx.fillStyle = frame.pointables[0].touchZone == "touching" ? "red" : "black";
-
-    ctx.beginPath();
-    ctx.arc(x, y, 10, 0, 2*Math.PI);
-    ctx.fill();
-
-    imgaeIndex = Math.floor(x/60);
-
-    var data = {
-      "filename": imgaeData[imgaeIndex]
-    };
-
-    if (y <= 30&&TIMEOUT > 0) {
-      TIMEOUT--;
-      ajaxPost(data).then((res) => {
-        console.log(res);
-      });
-    }
-  }
-});
